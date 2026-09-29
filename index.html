@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Website For Your Birthday🙌</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+:root{--pink:#ff8fc8;--pink-soft:#ffd3ea;--glow:rgba(255,105,180,.55);--ink:#0a050f;--hand:'Caveat','Segoe Script',cursive;--body:'Patrick Hand','Trebuchet MS',Arial,sans-serif}
+*{box-sizing:border-box}
+*:focus{outline:none!important}
+html{-webkit-tap-highlight-color:transparent}
+
+/* LATAR: malam, bulan, danau */
+body{margin:0;min-height:100vh;font-family:var(--body);font-size:18px;color:var(--pink-soft);
+background:
+ radial-gradient(circle at 86% 7%,rgba(255,205,232,.9) 0 26px,rgba(255,140,200,.35) 27px 58px,rgba(255,105,180,.12) 59px 120px,transparent 121px),
+ radial-gradient(circle at 10% 88%,rgba(255,80,170,.16),transparent 38%),
+ linear-gradient(180deg,#07030c 0%,#12081a 55%,#1d0a24 100%);
+background-attachment:fixed;overflow-x:hidden;overflow-y:auto;padding:20px 10px 90px;-webkit-tap-highlight-color:transparent;position:relative}
+body::before{content:"🏮";position:fixed;right:16px;bottom:14px;font-size:36px;z-index:1;pointer-events:none;filter:drop-shadow(0 0 10px #ff9a3c) drop-shadow(0 0 22px rgba(255,140,60,.6))}
+body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:20vh;z-index:0;pointer-events:none;
+background:repeating-linear-gradient(180deg,rgba(255,130,200,.13) 0 1px,transparent 1px 9px),linear-gradient(180deg,transparent,rgba(255,90,180,.2))}
+
+/* KARTU BERBINGKAI */
+.card{width:min(92%,560px);margin:20px auto;padding:34px 28px;border-radius:34px;position:relative;z-index:2;
+background:linear-gradient(160deg,rgba(22,10,30,.92),rgba(8,4,12,.96));
+border:1.5px solid rgba(255,150,210,.6);
+backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+box-shadow:0 0 0 4px rgba(255,105,180,.06),0 0 30px var(--glow),0 0 80px rgba(255,80,170,.18),inset 0 0 40px rgba(255,90,180,.08);overflow:visible}
+.card::before{content:"";position:absolute;inset:8px;border-radius:27px;border:1px solid rgba(255,190,225,.28);pointer-events:none}
+.card::after{content:"♥";position:absolute;top:-13px;left:50%;transform:translateX(-50%);padding:0 10px;background:#0c0512;color:var(--pink);font-size:20px;line-height:1;text-shadow:0 0 10px var(--pink),0 0 22px var(--glow)}
+
+h1,h2{font-family:var(--hand);font-weight:700;color:#ffe3f1;position:relative;line-height:1.1;
+text-shadow:0 0 6px rgba(255,170,220,.7),0 0 20px rgba(255,90,180,.5)}
+h1{font-size:2.9rem;margin:.3em 0}
+h2{font-size:2.1rem;margin:.4em 0}
+p{color:#f6d9ea;line-height:1.7;position:relative}
+
+.slide{display:none;text-align:center;position:relative}
+.slide.active{display:block}
+
+/* FOTO */
+.photo-box{width:100%;max-width:350px;height:300px;margin:20px auto;border-radius:24px;overflow:hidden;background:#160e15;
+border:1.5px solid rgba(255,160,215,.55);box-shadow:0 0 22px var(--glow),0 12px 35px rgba(0,0,0,.5)}
+.photo-box img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* TOMBOL PIL NEON */
+button{font-family:var(--body);font-size:18px;padding:12px 26px;margin:8px;border-radius:999px;cursor:pointer;color:#fff0f8;
+border:1.5px solid rgba(255,160,215,.85);
+background:linear-gradient(135deg,rgba(255,105,180,.3),rgba(50,12,42,.9));
+box-shadow:0 0 12px rgba(255,105,180,.4),inset 0 0 14px rgba(255,140,200,.15);
+transition:transform .25s ease,box-shadow .35s ease,border-color .35s ease;
+outline:none!important;-webkit-tap-highlight-color:transparent;appearance:none;-webkit-appearance:none;position:relative;z-index:2}
+button:hover{transform:translateY(-2px) scale(1.04);border-color:#ffc4e3;box-shadow:0 0 18px rgba(255,140,205,.75),0 0 40px rgba(255,90,180,.35),inset 0 0 16px rgba(255,140,200,.25)}
+button:focus,button:focus-visible,button:active{outline:none!important}
+button.next-glow{animation:softGlow .8s ease}
+@keyframes softGlow{0%{transform:scale(1)}35%{transform:scale(1.08);box-shadow:0 0 18px rgba(255,150,205,.85),0 0 44px rgba(255,105,180,.5)}100%{transform:scale(1)}}
+
+.runaway{position:relative;z-index:9999;transition:left .4s ease,top .4s ease,transform .4s ease}
+
+.prayer-slide{max-height:70vh;overflow-y:auto;padding-right:10px}
+.prayer-slide::-webkit-scrollbar{width:6px}
+.prayer-slide::-webkit-scrollbar-thumb{background:linear-gradient(#ff9dcc,#d96b9f);border-radius:10px}
+.prayer-slide::-webkit-scrollbar-track{background:rgba(255,255,255,.05)}
+.prayer-slide p{font-size:1.15rem}
+
+.burning{animation:shakeBurn .08s infinite}
+@keyframes shakeBurn{0%{transform:translateX(0) rotate(0)}25%{transform:translateX(-4px) rotate(-3deg)}50%{transform:translateX(4px) rotate(3deg)}75%{transform:translateX(-3px) rotate(-2deg)}100%{transform:translateX(0) rotate(0)}}
+
+#fire{position:fixed;display:none;z-index:10000;pointer-events:none}
+#fire.active{display:block}
+.flame{position:absolute;font-size:25px;animation:fireFloat .7s infinite alternate}
+@keyframes fireFloat{from{transform:translateY(5px) scale(.8);opacity:.7}to{transform:translateY(-12px) scale(1.2);opacity:1}}
+
+.pink-sparkle{position:fixed;width:5px;height:5px;border-radius:50%;background:#ffb6d9;box-shadow:0 0 12px rgba(255,182,217,.9),0 0 24px rgba(255,105,180,.5);opacity:.6;pointer-events:none;z-index:1;animation:sparkleFloat 4s ease-in-out infinite}
+.s1{left:9%;top:18%}.s2{right:12%;top:36%;animation-delay:1.2s}.s3{left:78%;bottom:25%;animation-delay:2.1s}
+@keyframes sparkleFloat{0%,100%{transform:translateY(0) scale(.8);opacity:.25}50%{transform:translateY(-16px) scale(1.3);opacity:.85}}
+
+/* SLIDE MANCING: ikan neon */
+.fishing-slide{min-height:430px;margin:-34px -28px;padding:42px 18px 35px;border-radius:32px;overflow:hidden;position:relative;background:transparent}
+.fishing-slide::before{content:"✦   ·   ✧      ·   ✦       ·   ✧   ·";position:absolute;inset:20px 0 auto;color:rgba(255,190,224,.55);font-size:13px;letter-spacing:14px;white-space:nowrap;text-shadow:0 0 12px rgba(255,126,196,.8);animation:starsDrift 6s linear infinite;pointer-events:none}
+.fishing-content{position:relative;z-index:20;max-width:500px;margin:auto;padding:34px 16px 22px;border:1.5px solid rgba(255,160,215,.55);border-radius:30px;background:rgba(8,4,12,.75);
+box-shadow:inset 0 0 30px rgba(255,107,187,.08),0 0 28px rgba(255,92,182,.25);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.little-heart{color:#ffb8dd;font-size:30px;line-height:1;margin-bottom:8px;text-shadow:0 0 8px #ff83c4,0 0 22px rgba(255,105,180,.65);animation:heartPulse 1.8s ease-in-out infinite}
+.fishing-line{width:90px;height:1px;margin:0 auto 20px;background:linear-gradient(90deg,transparent,#ff9dce,transparent);box-shadow:0 0 10px rgba(255,105,180,.65)}
+.fishing-slide button{position:relative;z-index:30}
+.fishing-slide .neon-main-button{display:block;margin:10px auto 18px;padding:14px 30px;font-size:20px}
+
+.neon-fish{position:absolute;z-index:8;width:78px;height:38px;filter:drop-shadow(0 0 4px #ffb1dc) drop-shadow(0 0 11px rgba(255,69,175,.9)) drop-shadow(0 0 22px rgba(255,69,175,.45));opacity:.92;pointer-events:none}
+.neon-fish .fish-body{position:absolute;left:12px;top:0;display:block;width:52px;height:34px;font-size:0;border-radius:65% 42% 48% 65%;transform:rotate(-5deg);
+background:radial-gradient(circle at 68% 38%,#fff 0 2px,transparent 3px),linear-gradient(135deg,#ffb5df,#ff5eaf 52%,#b82b78);border:1px solid #ffd4ec;box-shadow:inset 0 0 8px rgba(255,255,255,.45),0 0 7px #ff8cc7}
+.neon-fish .fish-body::after{content:"";position:absolute;left:15px;top:8px;width:27px;height:10px;border-top:1px solid rgba(255,235,248,.72);border-radius:50%;transform:rotate(-8deg)}
+.neon-fish .fish-tail{position:absolute;left:1px;top:4px;width:25px;height:28px;color:transparent;font-size:0;background:linear-gradient(135deg,#ff9fd4,#d73586);clip-path:polygon(100% 50%,0 0,20% 50%,0 100%);filter:drop-shadow(0 0 5px #ff75bb)}
+.fish-a{left:-90px;top:105px;transform:scale(1.05);animation:fishAcrossA 10s linear infinite}
+.fish-b{right:-100px;top:180px;transform:scale(.72) rotate(180deg);animation:fishAcrossB 13s linear infinite;opacity:.75}
+.fish-c{left:8%;bottom:30px;transform:scale(.58) rotate(-8deg);animation:fishFloatC 5s ease-in-out infinite;opacity:.62}
+.fish-d{right:4%;top:70px;transform:scale(.48) rotate(12deg);animation:fishFloatD 4.5s ease-in-out infinite;opacity:.55}
+.fish-e{left:48%;top:45px;transform:scale(.36);animation:fishFloatE 6s ease-in-out infinite;opacity:.45}
+.water-glow{position:absolute;z-index:2;left:-10%;bottom:-85px;width:120%;height:150px;border-radius:50%;background:repeating-linear-gradient(170deg,transparent 0 15px,rgba(255,123,195,.1) 16px 17px);box-shadow:0 -15px 45px rgba(255,80,177,.12);transform:rotate(-2deg);pointer-events:none}
+@keyframes fishAcrossA{0%{left:-100px;transform:scale(1.05) rotate(2deg)}45%{transform:scale(1.05) rotate(-4deg) translateY(-12px)}100%{left:calc(100% + 100px);transform:scale(1.05) rotate(2deg)}}
+@keyframes fishAcrossB{0%{right:-110px;transform:scale(.72) rotate(180deg)}50%{transform:scale(.72) rotate(180deg) translateY(14px)}100%{right:calc(100% + 110px);transform:scale(.72) rotate(180deg)}}
+@keyframes fishFloatC{0%,100%{transform:translateY(0) rotate(-8deg) scale(.58)}50%{transform:translateY(-20px) rotate(2deg) scale(.63)}}
+@keyframes fishFloatD{0%,100%{transform:translate(0,0) rotate(12deg) scale(.48)}50%{transform:translate(-15px,18px) rotate(-2deg) scale(.54)}}
+@keyframes fishFloatE{0%,100%{transform:translate(0,0) rotate(-4deg) scale(.36)}50%{transform:translate(20px,12px) rotate(7deg) scale(.43)}}
+@keyframes heartPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.16)}}
+@keyframes starsDrift{from{transform:translateX(0)}to{transform:translateX(-80px)}}
+
+@media (max-width:500px){
+.card{padding:28px 18px}
+h1{font-size:2.5rem}
+.photo-box{height:250px}
+.prayer-slide{max-height:65vh}
+.fishing-slide{margin:-28px -18px;min-height:470px;padding:34px 12px 28px}
+.fishing-content{padding:30px 12px 20px}
+.neon-fish{transform:scale(.72)}
+}
+/* BUNGA DI PINGGIR + KELOPAK JATUH */
+.bloom{position:fixed;width:230px;height:230px;z-index:1;pointer-events:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cdefs%3E%3Cg id='f'%3E%3Cg fill='%23ff9ccf' stroke='%23ffd6ea' stroke-width='.6'%3E%3Cellipse cy='-7' rx='4.6' ry='7'/%3E%3Cellipse cy='-7' rx='4.6' ry='7' transform='rotate(72)'/%3E%3Cellipse cy='-7' rx='4.6' ry='7' transform='rotate(144)'/%3E%3Cellipse cy='-7' rx='4.6' ry='7' transform='rotate(216)'/%3E%3Cellipse cy='-7' rx='4.6' ry='7' transform='rotate(288)'/%3E%3C/g%3E%3Ccircle r='2.2' fill='%23ff3f95'/%3E%3C/g%3E%3C/defs%3E%3Cg fill='none' stroke='%234a1a3c' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M-5 25C40 30 75 55 110 80S165 125 195 160'/%3E%3Cpath d='M40 33C50 60 45 90 30 120'/%3E%3Cpath d='M100 74C120 50 150 40 190 45'/%3E%3C/g%3E%3Cg transform='translate(25 28) scale(1.6)'%3E%3Cuse href='%23f'/%3E%3C/g%3E%3Cg transform='translate(70 47) scale(1.2)'%3E%3Cuse href='%23f'/%3E%3C/g%3E%3Cg transform='translate(110 80) scale(1.7)'%3E%3Cuse href='%23f'/%3E%3C/g%3E%3Cg transform='translate(150 105) scale(1.1)'%3E%3Cuse href='%23f'/%3E%3C/g%3E%3Cg transform='translate(185 150) scale(1.4)'%3E%3Cuse href='%23f'/%3E%3C/g%3E%3Cg transform='translate(32 118) scale(1.3)'%3E%3Cuse href='%23f'/%3E%3C/g%3E%3Cg transform='translate(44 72) scale(1)'%3E%3Cuse href='%23f'/%3E%3C/g%3E%3Cg transform='translate(140 44) scale(1.5)'%3E%3Cuse href='%23f'/%3E%3C/g%3E%3Cg transform='translate(188 45) scale(1.1)'%3E%3Cuse href='%23f'/%3E%3C/g%3E%3Cg transform='translate(85 64) scale(0.8)'%3E%3Cuse href='%23f'/%3E%3C/g%3E%3C/svg%3E") no-repeat center/contain;filter:drop-shadow(0 0 8px rgba(255,105,180,.7)) drop-shadow(0 0 20px rgba(255,80,170,.35))}
+.bloom-tl{top:0;left:0}
+.bloom-tr{top:0;right:0;transform:scaleX(-1)}
+.bloom-bl{bottom:0;left:0;transform:scaleY(-1);width:170px;height:170px}
+.bloom-br{bottom:0;right:0;transform:scale(-1,-1);width:170px;height:170px;z-index:0}
+.petal{position:fixed;top:0;z-index:3;pointer-events:none;border-radius:100% 0 100% 0;background:linear-gradient(135deg,#ffe0f0,#ff7fbd);box-shadow:0 0 8px rgba(255,120,190,.7);animation:petalFall linear infinite,petalSway ease-in-out infinite alternate}
+@keyframes petalFall{from{translate:0 -10vh}to{translate:0 110vh}}
+@keyframes petalSway{from{transform:translateX(-22px) rotate(0)}to{transform:translateX(34px) rotate(200deg)}}
+@media (max-width:500px){.bloom{width:140px;height:140px}.bloom-bl,.bloom-br{width:110px;height:110px}}
+@media (prefers-reduced-motion:reduce){.petal{display:none}*{animation-duration:.001s!important;animation-iteration-count:1!important}}
+</style>
+</head>
+<body>
+
+<div class="pink-sparkle s1"></div>
+<div class="pink-sparkle s2"></div>
+<div class="pink-sparkle s3"></div>
+<div class="bloom bloom-tl"></div>
+<div class="bloom bloom-tr"></div>
+<div class="bloom bloom-bl"></div>
+<div class="bloom bloom-br"></div>
+
+<div class="card">
+
+<div class="slide active">
+<h1>For You, My Fishing Partner</h1>
+<p>Ika punya sesuatu buat Om ✌</p>
+<button onclick="nextSlide()">Buka 🎁</button>
+</div>
+
+<div class="slide fishing-slide">
+<div class="fishing-stars"></div>
+<div class="neon-fish fish-a" aria-hidden="true"><span class="fish-body">◀</span><span class="fish-tail">◁</span></div>
+<div class="neon-fish fish-b" aria-hidden="true"><span class="fish-body">◀</span><span class="fish-tail">◁</span></div>
+<div class="neon-fish fish-c" aria-hidden="true"><span class="fish-body">◀</span><span class="fish-tail">◁</span></div>
+<div class="neon-fish fish-d" aria-hidden="true"><span class="fish-body">◀</span><span class="fish-tail">◁</span></div>
+<div class="neon-fish fish-e" aria-hidden="true"><span class="fish-body">◀</span><span class="fish-tail">◁</span></div>
+<div class="fishing-content">
+<div class="little-heart">♡</div>
+<h2>Om, mancing yok sabtu? 🎣</h2>
+<div class="fishing-line"></div>
+<button class="neon-main-button" onclick="nextSlide()">🎣 Yokkkk ✨</button>
+<button onclick="hookButton(this)">Lusa la</button>
+<button onclick="hookButton(this)">besok orang manen</button>
+</div>
+<div class="water-glow" aria-hidden="true"></div>
+</div>
+
+<div class="slide">
+<h1>YEYYYYY 🎉</h1>
+<h2>MANCING.....</h2>
+<p>🎣🐟🌊</p>
+<button onclick="nextSlide()">Lanjut 😸</button>
+</div>
+
+<div class="slide">
+<h2>Om jangan marah-marah lagi ya ke Ika.. 🥺
+kalo om marah gakawan kita</h2>
+<button onclick="nextSlide()">Iyaa</button>
+<button class="runaway" onclick="runAway(this)">Nggak</button>
+<button class="runaway" onclick="runAway(this)">nasihat itu lo, bukan marah</button>
+</div>
+
+<div class="slide">
+<h2>Hehehe 👐</h2>
+<p>Yaudah jangan marah-marah lagi ya Om 🤛</p>
+<button onclick="nextSlide()">Lanjut</button>
+</div>
+
+<div class="slide">
+<h2>Foto kapan ini???</h2>
+<div class="photo-box"><img src="foto1.jpeg" alt="Foto 1"></div>
+<button onclick="nextSlide()">Lanjut...</button>
+</div>
+
+<div class="slide">
+<h2>Om ga mau sama cewe lain kan? 😤</h2>
+<button onclick="nextSlide()">Ngga, sama Ika aja 😌</button>
+<button onclick="burnButton(this)">Aku cari cewe lain</button>
+</div>
+
+<div class="slide">
+<h2>Foto lagi 📸</h2>
+<div class="photo-box"><img src="foto2.jpeg" alt="Foto 2"></div>
+<button onclick="nextSlide()">Lanjut...</button>
+</div>
+
+<div class="slide">
+<h2>🎉 Surprise!</h2>
+<p>Semoga Om suka sama hadiah kecil dari Ika ini hehee (iya,pak)</p>
+<button onclick="nextSlide()">Lanjut</button>
+</div>
+
+<div class="slide">
+<h2>😺 Untuk Om</h2>
+<p>Thaks For All</p>
+<button onclick="nextSlide()">Lanjut</button>
+</div>
+
+<div class="slide prayer-slide">
+<h2>Selamat Ulang Tahun, Om! 🎂💗</h2>
+<p>
+Selamat ulang tahun, Om! 🎂
+<br><br>
+Di hari ulang tahun Om ini, Ika cuma mau doain semoga Om selalu diberikan kesehatan,
+umur yang panjang, dan dimudahkan dalam setiap urusan Om.
+<br><br>
+Semoga apa pun yang Om cita-citakan bisa tercapai satu per satu.
+Semoga langkah Om selalu dipermudah, rezekinya dilancarkan,
+dan Om selalu dikelilingi orang-orang yang tulus.
+kayak ikaa hehe😅
+<br><br>
+Ika juga berharap semoga Om tetap jadi Om yang Ika kenal,
+sering-sering ajak Ika mancing ya Om. 🎣
+<br><br>
+Pokoknya, semoga tahun ini membawa banyak hal baik buat Om.
+Kalau ada hari-hari yang berat, semoga Om selalu punya alasan
+untuk tetap tersenyum dan semangat lagi.
+<br><br>
+Jangan cari tempat pelarian ke cewe lain! 😤
+<br><br>
+Sekali lagi, selamat ulang tahun, Om! 🎉💗
+<br><br>
+Semoga semua doa baik yang Om harapkan,
+satu per satu Allah kabulkan.
+<br><br>
+Aamiin 🤲🏻✨
+<br><br>
+— Ika ♡
+</p>
+<button onclick="nextSlide()">Lanjut</button>
+</div>
+
+<div class="slide">
+<h1>💗 Selesai 💗</h1>
+<h2>Selamat ulang tahun sekali lagi, Om! 🎂</h2>
+<p>Dari Ika ♡</p>
+</div>
+
+</div>
+
+<div id="fire">
+<span class="flame" style="left:-50px;top:-40px;">🔥</span>
+<span class="flame" style="left:-20px;top:-70px;">🔥</span>
+<span class="flame" style="left:20px;top:-60px;">🔥</span>
+<span class="flame" style="left:55px;top:-40px;">🔥</span>
+<span class="flame" style="left:-70px;top:0;">🔥</span>
+<span class="flame" style="left:70px;top:0;">🔥</span>
+<span class="flame" style="left:-60px;top:40px;">🔥</span>
+<span class="flame" style="left:-30px;top:70px;">🔥</span>
+<span class="flame" style="left:10px;top:75px;">🔥</span>
+<span class="flame" style="left:50px;top:55px;">🔥</span>
+<span class="flame" style="left:-90px;top:-30px;">🔥</span>
+<span class="flame" style="left:90px;top:-25px;">🔥</span>
+<span class="flame" style="left:-90px;top:35px;">🔥</span>
+<span class="flame" style="left:90px;top:35px;">🔥</span>
+</div>
+
+<script>
+const slides = document.querySelectorAll(".slide");
+let currentSlide = 0;
+
+function showSlide(index) {
+    slides.forEach(slide => slide.classList.remove("active"));
+    if (index >= slides.length) index = slides.length - 1;
+    if (index < 0) index = 0;
+    currentSlide = index;
+    slides[currentSlide].classList.add("active");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function nextSlide() {
+    const clickedButton = document.activeElement;
+    if (clickedButton && clickedButton.tagName === "BUTTON") {
+        clickedButton.classList.remove("next-glow");
+        void clickedButton.offsetWidth;
+        clickedButton.classList.add("next-glow");
+        setTimeout(() => clickedButton.classList.remove("next-glow"), 800);
+    }
+    setTimeout(() => {
+        if (currentSlide < slides.length - 1) showSlide(currentSlide + 1);
+    }, 180);
+}
+
+function runAway(button) {
+    const margin = 15;
+    const screenWidth = document.documentElement.clientWidth;
+    const screenHeight = document.documentElement.clientHeight;
+    const maxX = Math.max(margin, screenWidth - button.offsetWidth - margin);
+    const maxY = Math.max(margin, screenHeight - button.offsetHeight - margin);
+    const randomX = Math.floor(Math.random() * (maxX - margin + 1)) + margin;
+    const randomY = Math.floor(Math.random() * (maxY - margin + 1)) + margin;
+    button.style.position = "fixed";
+    button.style.left = randomX + "px";
+    button.style.top = randomY + "px";
+    button.style.transform = `rotate(${Math.floor(Math.random() * 21) - 10}deg)`;
+    button.style.display = "block";
+}
+
+function hookButton(button) {
+    if (button.dataset.hooked === "true") return;
+    button.dataset.hooked = "true";
+    const hook = document.createElement("div");
+    hook.innerHTML = "🎣";
+    hook.style.position = "fixed";
+    hook.style.fontSize = "45px";
+    hook.style.zIndex = "10001";
+    hook.style.pointerEvents = "none";
+    const rect = button.getBoundingClientRect();
+    hook.style.left = (rect.left + rect.width / 2 - 20) + "px";
+    hook.style.top = "-60px";
+    document.body.appendChild(hook);
+    setTimeout(() => {
+        hook.style.transition = "top .8s ease";
+        hook.style.top = (rect.top - 45) + "px";
+    }, 50);
+    setTimeout(() => {
+        hook.style.transition = "top 1s ease";
+        hook.style.top = "-150px";
+        button.style.transition = "transform 1s ease, opacity 1s ease";
+        button.style.transform = "translateY(-250px) rotate(-10deg)";
+        button.style.opacity = "0";
+    }, 900);
+    setTimeout(() => {
+        button.style.display = "none";
+        hook.remove();
+    }, 1900);
+}
+
+function burnButton(button) {
+    if (button.dataset.burning === "true") return;
+    button.dataset.burning = "true";
+    const fire = document.getElementById("fire");
+    const rect = button.getBoundingClientRect();
+    fire.style.left = (rect.left + rect.width / 2) + "px";
+    fire.style.top = (rect.top + rect.height / 2) + "px";
+    fire.style.display = "block";
+    fire.classList.add("active");
+    button.classList.add("burning");
+    setTimeout(() => {
+        button.style.opacity = "0";
+        button.style.transform = "scale(.5) rotate(20deg)";
+    }, 650);
+    setTimeout(() => {
+        button.style.display = "none";
+        button.classList.remove("burning");
+        fire.classList.remove("active");
+        fire.style.display = "none";
+    }, 1000);
+}
+
+(function () {
+    for (let i = 0; i < 20; i++) {
+        const p = document.createElement("span");
+        p.className = "petal";
+        const size = 8 + Math.random() * 10;
+        p.style.cssText =
+            `left:${Math.random() * 100}vw;width:${size}px;height:${size * 1.2}px;` +
+            `animation-duration:${8 + Math.random() * 8}s,${3 + Math.random() * 3}s;` +
+            `animation-delay:${-Math.random() * 14}s,${-Math.random() * 5}s;` +
+            `opacity:${0.5 + Math.random() * 0.4}`;
+        document.body.appendChild(p);
+    }
+})();
+</script>
+</body>
+</html>
